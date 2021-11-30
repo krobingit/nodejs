@@ -18,17 +18,17 @@ fs.writeFile(`./backup/text-${i}.txt`,quote,(err)=>console.log("error"))
 //const express =require('express') //type: commonjs
 import express from 'express' //type: module
 import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
 
 const app = express();
 app.use(express.json()); //inbuilt middleware
 //every req in the app body is parsed as JSON
+dotenv.config(); //all keys it will put in process.env
+const PORT = process.env.PORT;
 
 
-const MONGO_URL = "mongodb://localhost";
-//mongodb+srv://robinlio:<password>@cluster0.nev0r.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
-//const MONGO_URL = "mongodb+srv://robinlio:9790199718@cluster0.nev0r.mongodb.net";
 async function CreateConnection() {
-  const client = new MongoClient(MONGO_URL);
+  const client = new MongoClient(process.env.MONGO_URL);
   await client.connect();
   console.log("Mongodb Connect")
   return client;
@@ -65,4 +65,11 @@ console.log(data)
   res.send(result);
 })
 
-app.listen(7000);
+app.put("/movies/:id", async (req, res) => {
+  const data = req.body;
+console.log(data)
+  const result = await client.db("movies").collection("movies").insertMany(data);
+  res.send(result);
+})
+
+app.listen(PORT);
