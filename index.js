@@ -19,57 +19,36 @@ fs.writeFile(`./backup/text-${i}.txt`,quote,(err)=>console.log("error"))
 import express from 'express' //type: module
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
+import { moviesRouter } from './routes/movies.js'
 
-const app = express();
+export const app = express();
+//middleware-interceptor callback function whenever request is sent to the server.
+//it spies on the request and executes a function code which changes however it feeds.
+//app.use(path,callback)
 app.use(express.json()); //inbuilt middleware
 //every req in the app body is parsed as JSON
 dotenv.config(); //all keys it will put in process.env
 const PORT = process.env.PORT;
 
 
-async function CreateConnection() {
+async function CreateDBConnection() {
   const client = new MongoClient(process.env.MONGO_URL);
   await client.connect();
   console.log("Mongodb Connect")
   return client;
 }
-const client = await CreateConnection();
+export const client = await CreateDBConnection();
 
 
 app.get('/', (req, res) => {
- res.send("Hello World***")
+ res.send("Server is running successfully")
 });
 
 
-app.get("/movies/:id", async (req, res) => {
 
-  const { id } = req.params;
-  const movie = await client.db("movies").collection("movies").findOne({ id: id });
- //const movie = movies.find((movie) => movie.id === id);
- movie ? res.send(movie) : res.status(404).send({ message: "no match found" });
-})
+app.use("/movies", moviesRouter)
 
 
+app.listen(PORT,()=>console.log("Server running on port:"+PORT));
 
-app.get("/movies",async (req, res) => {
 
-  const filter = req.query;
-  const filteredMovies = await client.db("movies").collection("movies").find(filter).toArray()//cursor to array
-  res.send(filteredMovies);
-})
-
-app.post("/movies", async (req, res) => {
-  const data = req.body;
-console.log(data)
-  const result = await client.db("movies").collection("movies").insertMany(data);
-  res.send(result);
-})
-
-app.put("/movies/:id", async (req, res) => {
-  const data = req.body;
-console.log(data)
-  const result = await client.db("movies").collection("movies").insertMany(data);
-  res.send(result);
-})
-
-app.listen(PORT);
