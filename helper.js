@@ -10,7 +10,7 @@ async function DeleteByMovieId(id) {
   return await client.db("movies").collection("movies").find(filter).toArray();
 }
  async function CreateMovies(data) {
-  return await client.db("movies").collection("movies").insertMany(data);
+  return await client.db("movies").collection("movies").insertOne(data);
 }
  async function getMovieById(id) {
   return await client

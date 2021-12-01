@@ -26,7 +26,7 @@ export const app = express();
 //middleware-interceptor callback function whenever request is sent to the server.
 //it spies on the request and executes a function code which changes however it feeds.
 //app.use(path,callback)
-app.use(cors());
+app.use(cors());//cors middleware-every req accepts any origin
 app.use(express.json()); //inbuilt middleware
 //every req in the app body is parsed as JSON
 dotenv.config(); //all keys it will put in process.env
