@@ -19,12 +19,14 @@ fs.writeFile(`./backup/text-${i}.txt`,quote,(err)=>console.log("error"))
 import express from 'express' //type: module
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
-import { moviesRouter } from './routes/movies.js'
+import { moviesRouter } from './routes/movies.js';
+import cors from 'cors';
 
 export const app = express();
 //middleware-interceptor callback function whenever request is sent to the server.
 //it spies on the request and executes a function code which changes however it feeds.
 //app.use(path,callback)
+app.use(cors());
 app.use(express.json()); //inbuilt middleware
 //every req in the app body is parsed as JSON
 dotenv.config(); //all keys it will put in process.env
